@@ -1,42 +1,68 @@
-import React, { useState } from 'react'
-import iconFirstLevel from '../../images/icon-first-level.svg'
-import iconSecondLevel from '../../images/icon-second-level.svg'
-import iconCalculation from '../../images/icon-calculation.svg'
+import React, { FC, FormEvent, useState } from 'react'
+
+import { NewRowData, RowData } from '../../utils/types'
+import { RowIcons } from './row-icons'
+import { TableCell } from './table-cell'
+
 import styles from './table.module.sass'
 
+interface ITableRowProps {
+  data?: RowData
+}
 // TODO: Вынести иконки в отдельный компонент
-export const TableRow = () => {
-  const [isSecondIconsVisiable, setIsSecondIconsVisiable] = useState(false)
+export const TableRow: FC<ITableRowProps> = ({ data }) => {
+  const [ isEdit, setIsEdit ] = useState(!data)
+
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const target = event.target as typeof event.target & {
+      title: { value: string };
+      unit: { value: string };
+      quantity: { value: string };
+      unitPrice: { value: string };
+    };
+
+    const data: NewRowData = {
+      title: target.title.value,
+      unit: target.unit.value,
+      quantity: +target.quantity.value,
+      unitPrice: +target.unitPrice.value,
+      price: +target.quantity.value * +target.unitPrice.value,
+
+      parent: null,
+      type: 'level'
+    }
+    console.log('data: ', data);
+    setIsEdit(false)
+  }
 
   return (
-    <div className={styles.row}>
-      <span className={styles.cell}>
-        <div
-          className={styles.icons}
-          onMouseEnter={() => setIsSecondIconsVisiable(true)}
-          onMouseLeave={() => setIsSecondIconsVisiable(false)}
-        >
-          <img
-            src={iconFirstLevel}
-            alt=""
-          />
-          {
-            isSecondIconsVisiable &&
-            (
-              <>
-                <img src={iconSecondLevel} alt="" />
-                <img src={iconCalculation} alt="" />
-              </>
-            )
-          }
-        </div>
-        
-      </span>
-      <span className={styles.cell}>Название</span>
-      <span className={styles.cell}></span>
-      <span className={styles.cell}></span>
-      <span className={styles.cell}></span>
-      <span className={styles.cell}>1 209 122,5</span>
-    </div>
+    <form className={styles.row} onSubmit={onSubmit}>
+      <RowIcons isEdit={isEdit} />
+      <TableCell
+        name='title'
+        placeholder={data?.title ? data.title : 'Введите наименование'}
+        isEdit={isEdit}
+      />
+      <TableCell
+        name='unit'
+        placeholder={data?.unit ? data.unit : 'л'}
+        isEdit={isEdit}
+      />
+      <TableCell
+        name='quantity'
+        placeholder={data?.quantity ? String(data.quantity) : '1200'}
+        type='number'
+        isEdit={isEdit}
+      />
+      <TableCell
+        name='unitPrice'
+        placeholder={data?.unitPrice ? String(data.unitPrice) : '850'}
+        type='number'
+        isEdit={isEdit}
+      />
+      <span className={styles.cell}>{data ? data.price : 0}</span>
+      <input type="submit" value="" hidden />
+    </form>
   )
 }

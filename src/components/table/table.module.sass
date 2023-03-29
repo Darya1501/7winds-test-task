@@ -30,3 +30,23 @@
   cursor: pointer
   img
     line-height: 1
+
+.input
+  padding: 10px
+  width: 100%
+  background-color: transparent
+  border: 1px solid #414144
+  border-radius: 6px
+  color: #fff
+  &:placeholder
+    color: #71717A
+  &:disabled
+    padding: 0
+    border: none
+  &::-webkit-outer-spin-button, &::-webkit-inner-spin-button
+    display: none
+    -webkit-appearance: none
+    margin: 0
+
+input[type='number']
+  -moz-appearance: textfield
