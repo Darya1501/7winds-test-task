@@ -1,10 +1,18 @@
 import React from 'react'
+import { Table } from '../../table/table'
+import { Tabs } from '../../tabs/tabs'
+
 
 export const Workspace = () => {
+  const content = [
+    {
+      head: 'Строительно-монтажные работы',
+      content: <Table />
+    }
+  ]
   return (
-    <div>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sunt iure molestiae nulla iusto nihil, ipsam mollitia cupiditate provident corporis. Nobis magnam deleniti eius nihil id cumque modi fuga necessitatibus perspiciatis.
-    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sunt iure molestiae nulla iusto nihil, ipsam mollitia cupiditate agnam deleniti eius nihil id cumque modi fuga necessitatibus perspiciatis.
-    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sunt iure molestiae nulla iusto nihil, ipsam mollitia cupiditate provident corporis. Nobis magnam deleniti eius nihil id cumque modi fuga necessitatibus perspiciatis.
-    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sunt iure molestiae</div>
+    <div>
+      <Tabs body={content}  />
+    </div>
   )
 }

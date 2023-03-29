@@ -1,0 +1,32 @@
+.header, .row
+  display: grid
+  grid-template-columns: 110px 1fr repeat(4, 200px)
+  border-bottom: 1px solid#414144
+
+.row
+  &:last-child
+    border-bottom: none
+
+.attribute
+  padding: 0 0 12px 12px
+  font-size: 14px
+  color: #A1A1AA
+
+.cell
+  height: 60px
+  padding: 0 12px
+  display: flex
+  align-items: center
+  font-size: 14px
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+
+.icons
+  padding: 2px 3px
+  background-color: #414144
+  border-radius: 6px
+  display: flex
+  cursor: pointer
+  img
+    line-height: 1
