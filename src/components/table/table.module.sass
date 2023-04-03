@@ -13,13 +13,13 @@
   color: #A1A1AA
 
 .cell
+  position: relative
   height: 60px
   padding: 0 12px
   display: flex
   align-items: center
   font-size: 14px
   white-space: nowrap
-  overflow: hidden
   text-overflow: ellipsis
 
 .icons
@@ -35,30 +35,24 @@
     background-color: #414144
 
 
-.second_level_icon, .row_icon
-  position: relative
-  &::before
-    content: ''
-    width: 14px
-    height: 1px
-    position: absolute
-    left: -8px
-    top: 50%
-    background-color: #fff
-  &::after
-    content: ''
-    width: 1px
-    height: 30px
-    position: absolute
-    left: -8px
-    top: -16px
-    background-color: #fff
-
 .second_level_icon
+  position: relative
   left: 20px
 
 .row_icon
+  position: relative
   left: 50px
+
+.vertical_line
+  position: absolute
+  width: 1px
+  top: 37px
+  background-color: #C6C6C6
+
+.horisontal_line
+  position: absolute
+  height: 1px
+  background-color: #C6C6C6
 
 .input
   padding: 10px
