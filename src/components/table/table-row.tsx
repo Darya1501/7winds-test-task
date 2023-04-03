@@ -1,67 +1,100 @@
 import React, { FC, FormEvent, useState } from 'react'
+import { useDispatch } from '../../hooks/store-hooks'
+import { addNew, edit } from '../../store/slices/table'
 
-import { NewRowData, RowData } from '../../utils/types'
+import { EmptyRow, isFilled, NewRowData, RowData } from '../../utils/types'
 import { RowIcons } from './row-icons'
 import { TableCell } from './table-cell'
 
 import styles from './table.module.sass'
 
 interface ITableRowProps {
-  data?: RowData
+  row: RowData | EmptyRow,
+  index: number
 }
-// TODO: Вынести иконки в отдельный компонент
-export const TableRow: FC<ITableRowProps> = ({ data }) => {
-  const [ isEdit, setIsEdit ] = useState(!data)
+
+export const TableRow: FC<ITableRowProps> = ({ row, index }) => {
+  const [ isEdit, setIsEdit ] = useState(!isFilled(row))
+  const dispatch = useDispatch()
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    if (!isEdit) return
+
     const target = event.target as typeof event.target & {
       title: { value: string };
-      unit: { value: string };
-      quantity: { value: string };
-      unitPrice: { value: string };
+      unit?: { value: string };
+      quantity?: { value: number };
+      unitPrice?: { value: number };
     };
 
-    const data: NewRowData = {
+    const data: NewRowData & { list_id?: number } | RowData = {
+      ...row,
       title: target.title.value,
-      unit: target.unit.value,
-      quantity: +target.quantity.value,
-      unitPrice: +target.unitPrice.value,
-      price: +target.quantity.value * +target.unitPrice.value,
-
-      parent: null,
-      type: 'level'
+      unit: target.unit?.value || '',
+      quantity: target.quantity?.value || 0,
+      unitPrice: target.unitPrice?.value || 0,
+      price: target.quantity && target.unitPrice ? target.quantity.value * target.unitPrice.value : 0,
     }
-    console.log('data: ', data);
+
+    if ('id' in data) {
+      dispatch(edit(data))
+    } else {
+      if ('list_id' in row) {
+        delete data['list_id']
+        dispatch(addNew({ data, list_id: row.list_id }))
+      }
+    }
+
     setIsEdit(false)
   }
 
   return (
     <form className={styles.row} onSubmit={onSubmit}>
-      <RowIcons isEdit={isEdit} />
+      <RowIcons
+        type={row?.type ? row.type : 'level'}
+        parent={row?.parent ? row.parent : null}
+        index={index}
+        row={row}
+      />
       <TableCell
         name='title'
-        placeholder={data?.title ? data.title : 'Введите наименование'}
+        placeholder='Введите наименование'
+        data={isFilled(row) ? row?.title : ''}
         isEdit={isEdit}
+        setIsEdit={setIsEdit}
       />
-      <TableCell
-        name='unit'
-        placeholder={data?.unit ? data.unit : 'л'}
-        isEdit={isEdit}
-      />
-      <TableCell
-        name='quantity'
-        placeholder={data?.quantity ? String(data.quantity) : '1200'}
-        type='number'
-        isEdit={isEdit}
-      />
-      <TableCell
-        name='unitPrice'
-        placeholder={data?.unitPrice ? String(data.unitPrice) : '850'}
-        type='number'
-        isEdit={isEdit}
-      />
-      <span className={styles.cell}>{data ? data.price : 0}</span>
+      {
+        row.type === 'row' ? (
+          <>
+            <TableCell
+              name='unit'
+              placeholder='л'
+              data={isFilled(row) ? row?.unit : ''}
+              isEdit={isEdit}
+              setIsEdit={setIsEdit}
+            />
+            <TableCell
+              name='quantity'
+              placeholder='1200'
+              data={isFilled(row) ? row?.quantity : ''}
+              type='number'
+              isEdit={isEdit}
+              setIsEdit={setIsEdit}
+            />
+            <TableCell
+              name='unitPrice'
+              placeholder='850'
+              data={isFilled(row) ? row?.unitPrice : ''}
+              type='number'
+              isEdit={isEdit}
+              setIsEdit={setIsEdit}
+            />
+          </>
+        ) : (<span className={styles.plug_cell}></span>)
+      }
+      
+      <span className={styles.cell}>{isFilled(row) ? row.price : 0}</span>
       <input type="submit" value="" hidden />
     </form>
   )

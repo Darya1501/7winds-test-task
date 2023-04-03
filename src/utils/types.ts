@@ -1,6 +1,11 @@
 export interface EmptyRow {
-  parrent: number | null,
+  list_id: number,
+  parent: number | null,
   type: 'level' | 'row'
+}
+
+export const isFilled = (object: any): object is RowData => {
+  return 'id' in object
 }
 
 export interface NewRowData {

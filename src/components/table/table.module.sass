@@ -24,12 +24,41 @@
 
 .icons
   padding: 2px 3px
-  background-color: #414144
   border-radius: 6px
   display: flex
-  cursor: pointer
   img
     line-height: 1
+
+.icons_hovered
+  cursor: pointer
+  &:hover
+    background-color: #414144
+
+
+.second_level_icon, .row_icon
+  position: relative
+  &::before
+    content: ''
+    width: 14px
+    height: 1px
+    position: absolute
+    left: -8px
+    top: 50%
+    background-color: #fff
+  &::after
+    content: ''
+    width: 1px
+    height: 30px
+    position: absolute
+    left: -8px
+    top: -16px
+    background-color: #fff
+
+.second_level_icon
+  left: 20px
+
+.row_icon
+  left: 50px
 
 .input
   padding: 10px
@@ -50,3 +79,6 @@
 
 input[type='number']
   -moz-appearance: textfield
+
+.plug_cell
+  grid-column: span 3

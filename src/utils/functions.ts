@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import { NewRowData, RowData } from "./types"
 
 // функция для сохранения строки

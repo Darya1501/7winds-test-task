@@ -1,51 +1,48 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { NewRowData } from './../../utils/types';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { editRow, saveRow } from "../../utils/functions"
 import { EmptyRow, RowData } from "../../utils/types"
 
-
 type TTableState = {
-  storedRows: RowData[]
-  newRows: EmptyRow[]
+  displayRows: Array<RowData | EmptyRow>
 }
 
 const initialState: TTableState = {
-  storedRows: [
-    {
-      title: 'string', // Наименование работ
-      unit: 'string', // Ед. изм.
-      quantity: 5, // Количество
-      unitPrice: 5 ,// Цена за ед.
-      price: 25, // Стоимость
-    
-      parent: null, // id уровня, в котором находится (либо null для первого уровня)
-      type: 'level',
-
-      id: 1
-    },
-    {
-      title: 'string', // Наименование работ
-      unit: 'string', // Ед. изм.
-      quantity: 5, // Количество
-      unitPrice: 5 ,// Цена за ед.
-      price: 25, // Стоимость
-    
-      parent: 1, // id уровня, в котором находится (либо null для первого уровня)
-      type: 'level',
-
-      id: 2
-    },
-  ],
-  newRows: []
+  displayRows: [
+    { list_id: Date.now(), parent: null, type: 'level' },
+  ]
 }
 
 const tableSlice = createSlice({
   name: 'table',
   initialState,
   reducers: {
-    hello() {
-      console.log('Reducer works');
-    } 
+    edit(state, action: PayloadAction<RowData>) {
+      const { current } = editRow(action.payload, state.displayRows.filter(row => 'id' in row) as RowData[])
+      state.displayRows[state.displayRows.findIndex(row => ('id' in row) && row.id === current.id)] = current
+    },
+
+    addNew(state, action: PayloadAction<{ data: NewRowData, list_id: number }>) {
+      const { current, changed } = saveRow(action.payload.data, state.displayRows.filter(row => 'id' in row) as RowData[])
+      state.displayRows[state.displayRows.findIndex(row => ('list_id' in row) && row.list_id === action.payload.list_id)] = current
+      console.log('current, changed: ', current, changed);
+    },
+
+    addEmptyRow(state, action: PayloadAction<{ parent: number | null, type: 'row' | 'level', iconIndex: number }>) {
+      const newRow: EmptyRow = {
+        list_id: Date.now(),
+        parent: action.payload.parent,
+        type: action.payload.type,
+      }
+
+      let index = state.displayRows.length;
+      if (action.payload.parent) {
+        index = state.displayRows.findIndex((row) => ('id' in row) && row.id === action.payload.parent) + 1;
+      }
+      state.displayRows.splice(index, 0, newRow)
+    },
   }
 })
 
-export const { hello } = tableSlice.actions;
+export const { edit, addNew, addEmptyRow } = tableSlice.actions;
 export default tableSlice.reducer;
