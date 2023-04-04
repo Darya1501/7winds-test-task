@@ -7,10 +7,10 @@ export const TableHeader = () => {
     <div className={styles.header}>
     <span className={styles.attribute}>Уровень</span>
     <span className={styles.attribute}>Наименование работ</span>
-    <span className={styles.attribute}>Ед. изм.</span>
-    <span className={styles.attribute}>Количество</span>
-    <span className={styles.attribute}>Цена за ед.</span>
-    <span className={styles.attribute}>Стоимость</span>
+    <span className={styles.attribute}>Основная з/п</span>
+    <span className={styles.attribute}>Оборудование</span>
+    <span className={styles.attribute}>Накладные расходы</span>
+    <span className={styles.attribute}>Сметная прибыль</span>
   </div>
   )
 }

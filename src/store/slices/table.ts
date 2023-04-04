@@ -1,7 +1,6 @@
-import { NewRowData } from './../../utils/types';
+import { isFilled, RowData } from './../../utils/types';
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { editRow, saveRow } from "../../utils/functions"
-import { EmptyRow, RowData } from "../../utils/types"
+import { EmptyRow } from "../../utils/types"
 
 type TTableState = {
   displayRows: Array<RowData | EmptyRow>
@@ -9,7 +8,22 @@ type TTableState = {
 
 const initialState: TTableState = {
   displayRows: [
-    { list_id: Date.now(), parent: null, type: 'level' },
+    {
+      list_id: 1,
+      parentId: null,
+
+      rowName: "",
+      salary: 0,
+      equipmentCosts: 0,
+      overheads: 0,
+      estimatedProfit: 0,
+
+      machineOperatorSalary: 0,
+      mainCosts: 0,
+      materials: 0,
+      mimExploitation: 0,
+      supportCosts: 0,
+    }
   ]
 }
 
@@ -17,32 +31,73 @@ const tableSlice = createSlice({
   name: 'table',
   initialState,
   reducers: {
-    edit(state, action: PayloadAction<RowData>) {
-      const { current } = editRow(action.payload, state.displayRows.filter(row => 'id' in row) as RowData[])
-      state.displayRows[state.displayRows.findIndex(row => ('id' in row) && row.id === current.id)] = current
+    fillTable(state, action: PayloadAction<RowData[]>) {
+      if (action.payload.length) state.displayRows = action.payload
     },
 
-    addNew(state, action: PayloadAction<{ data: NewRowData, list_id: number }>) {
-      const { current, changed } = saveRow(action.payload.data, state.displayRows.filter(row => 'id' in row) as RowData[])
-      state.displayRows[state.displayRows.findIndex(row => ('list_id' in row) && row.list_id === action.payload.list_id)] = current
-      console.log('current, changed: ', current, changed);
+    updateExistingRows(state, action: PayloadAction<{ changed: RowData[], current: RowData }>) {
+      function updateArray(array: Array<RowData | EmptyRow>) {
+        return array.map((elem) => {
+          if ('list_id' in elem) return elem
+          if (elem.id === action.payload.current.id) elem = { ...elem, ...action.payload.current }
+          const changedObj = action.payload.changed.find((v) => v.id === (elem as RowData).id)
+          if (changedObj) elem = { ...elem, ...changedObj }
+          if (elem.child && elem.child.length) elem.child = updateArray(elem.child)
+
+          return elem
+        })
+      }
+      state.displayRows = updateArray(state.displayRows)
     },
 
-    addEmptyRow(state, action: PayloadAction<{ parent: number | null, type: 'row' | 'level', iconIndex: number }>) {
+    fillEmptyRow(state, action: PayloadAction<{ changed: RowData[], current: RowData, list_id: number }>) {
+      function updateArray(array: Array<RowData | EmptyRow>) {
+        return array.map((elem) => {
+          if ('list_id' in elem) {
+            if (elem.list_id === action.payload.list_id) return { ...action.payload.current, child: [] }
+          } else {
+            const changedObj = action.payload.changed.find((v) => v.id === (elem as RowData).id)
+            if (changedObj) elem = { ...elem, ...changedObj }
+            if (elem.child && elem.child.length) elem.child = updateArray(elem.child)
+          }
+          return elem
+        })
+      }
+      state.displayRows = updateArray(state.displayRows)
+    },
+
+    addEmptyRow(state, action: PayloadAction<{ parent: RowData }>) {
       const newRow: EmptyRow = {
         list_id: Date.now(),
-        parent: action.payload.parent,
-        type: action.payload.type,
+        parentId: action.payload.parent.id,
+
+        rowName: '',
+        salary: 0,
+        equipmentCosts: 0,
+        overheads: 0,
+        estimatedProfit: 0,
+
+        machineOperatorSalary: 0,
+        mainCosts: 0,
+        materials: 0,
+        mimExploitation: 0,
+        supportCosts: 0,
       }
 
-      let index = state.displayRows.length;
-      if (action.payload.parent) {
-        index = state.displayRows.findIndex((row) => ('id' in row) && row.id === action.payload.parent) + 1;
+      function addChild(array: Array<RowData | EmptyRow>) {
+        return array.map((row) => {
+          if (!isFilled(row)) return row
+          if (row.id === action.payload.parent.id) {
+            row.child.push(newRow)
+          } else addChild(row.child)
+          return row
+        })
       }
-      state.displayRows.splice(index, 0, newRow)
+
+      state.displayRows = addChild(state.displayRows)
     },
   }
 })
 
-export const { edit, addNew, addEmptyRow } = tableSlice.actions;
+export const { fillTable, addEmptyRow, fillEmptyRow, updateExistingRows } = tableSlice.actions;
 export default tableSlice.reducer;

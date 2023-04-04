@@ -1,24 +1,33 @@
-export interface EmptyRow {
-  list_id: number,
-  parent: number | null,
-  type: 'level' | 'row'
-}
-
 export const isFilled = (object: any): object is RowData => {
   return 'id' in object
 }
 
-export interface NewRowData {
-  title: string // Наименование работ
-  unit: string // Ед. изм.
-  quantity: number // Количество
-  unitPrice: number // Цена за ед.
-  price: number // Стоимость
-
-  parent: number | null // id уровня, в котором находится (либо null для первого уровня)
-  type: 'level' | 'row'
+export interface UnusedData {
+  machineOperatorSalary: 0,
+  mainCosts: 0,
+  materials: 0,
+  mimExploitation: 0,
+  supportCosts: 0
 }
 
-export interface RowData extends NewRowData {
-  id: number
+interface RowBasic extends UnusedData {
+  rowName: string, // Наименование работ
+  salary: number, // Основная зп
+  equipmentCosts: number, // Оборудование
+  overheads: number, // Накладные расходы
+  estimatedProfit: number, // Сметная прибыль
+}
+
+export interface NewRowData extends RowBasic {
+  parentId: number | null,
+}
+
+export interface EmptyRow extends NewRowData {
+  list_id: number
+}
+
+export interface RowData extends RowBasic {
+  id: number,
+  total: number,
+  child: Array<RowData | EmptyRow>,
 }
