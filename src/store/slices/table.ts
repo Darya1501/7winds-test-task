@@ -66,6 +66,24 @@ const tableSlice = createSlice({
       state.displayRows = updateArray(state.displayRows)
     },
 
+    deleteExistingRow(state, action: PayloadAction<{ changed: RowData[], current: RowData }>) {
+      console.log('current: ', action.payload.current);
+      function updateArray(array: Array<RowData | EmptyRow>) {
+        return array.reduce((acc: Array<RowData | EmptyRow>, curr) => {
+          if (isFilled(curr)) {
+            if (curr.id === action.payload.current.id) return acc
+            const changedObj = action.payload.changed.find((v) => v.id === (curr as RowData).id)
+            if (changedObj) curr = { ...curr, ...changedObj }
+            if (curr.child.length) curr.child = updateArray(curr.child)
+          }
+
+          acc.push(curr)
+          return acc
+        }, [])
+      }
+      state.displayRows = updateArray(state.displayRows)
+    },
+
     addEmptyRow(state, action: PayloadAction<{ parent: RowData }>) {
       const newRow: EmptyRow = {
         list_id: Date.now(),
@@ -99,5 +117,5 @@ const tableSlice = createSlice({
   }
 })
 
-export const { fillTable, addEmptyRow, fillEmptyRow, updateExistingRows } = tableSlice.actions;
+export const { fillTable, addEmptyRow, fillEmptyRow, updateExistingRows, deleteExistingRow } = tableSlice.actions;
 export default tableSlice.reducer;

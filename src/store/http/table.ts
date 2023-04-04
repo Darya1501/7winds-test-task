@@ -27,3 +27,10 @@ export async function fetchUpdateRow(row: RowData) {
   })
     .then(res => res.json())
 }
+
+export async function fetchDeleteRow(row: RowData) {
+  return await fetch(`${API_URL}/v1/outlay-rows/entity/${EID}/row/${row.id}/delete`, {
+    method: 'DELETE'
+  })
+    .then(res => res.json())
+}

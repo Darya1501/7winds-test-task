@@ -1,7 +1,7 @@
 import { AppDispatch } from "..";
 import { NewRowData, RowData } from "../../utils/types";
-import { fetchRowList, fetchCreateRow, fetchUpdateRow } from "../http/table";
-import { fillTable, fillEmptyRow, updateExistingRows } from "../slices/table";
+import { fetchRowList, fetchCreateRow, fetchUpdateRow, fetchDeleteRow } from "../http/table";
+import { fillTable, fillEmptyRow, updateExistingRows, deleteExistingRow } from "../slices/table";
 
 export function getRowList() {
   return (dispatch: AppDispatch) => {
@@ -24,6 +24,15 @@ export function updateRow(row: RowData) {
     fetchUpdateRow(row)
       .then((res: {changed: RowData[], current: RowData}) => {
         if (res.current) dispatch(updateExistingRows({...res}))
+      })
+  }
+}
+
+export function deleteRow(row: RowData) {
+  return (dispatch: AppDispatch) => {
+    fetchDeleteRow(row)
+      .then((res: {changed: RowData[], current: RowData}) => {
+        dispatch(deleteExistingRow({...res, current: row}))
       })
   }
 }
