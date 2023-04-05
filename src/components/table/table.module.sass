@@ -1,0 +1,82 @@
+.header, .row
+  display: grid
+  grid-template-columns: minmax(150px, max-content) 1fr repeat(4, 200px)
+  border-bottom: 1px solid#414144
+
+.row
+  &:last-child
+    border-bottom: none
+
+.attribute
+  padding: 0 0 12px 12px
+  font-size: 14px
+  color: #A1A1AA
+
+.cell
+  position: relative
+  height: 60px
+  padding: 0 12px
+  display: flex
+  align-items: center
+  font-size: 14px
+  white-space: nowrap
+  text-overflow: ellipsis
+
+.icons
+  padding: 6px
+  border-radius: 6px
+  display: flex
+  gap: 12px
+  img
+    line-height: 1
+    z-index: 1
+
+.icons_hovered
+  cursor: pointer
+  &:hover
+    background-color: #414144
+
+.input
+  padding: 10px
+  width: 100%
+  background-color: transparent
+  border: 1px solid #414144
+  border-radius: 6px
+  color: #fff
+  &:placeholder
+    color: #71717A
+  &:disabled
+    padding: 0
+    border: none
+  &::-webkit-outer-spin-button, &::-webkit-inner-spin-button
+    display: none
+    -webkit-appearance: none
+    margin: 0
+
+input[type='number']
+  -moz-appearance: textfield
+
+.plug_cell
+  grid-column: span 3
+
+.depth
+  --line-left: 35px
+  position: relative
+  &::before, &::after
+    content: ''
+    position: absolute
+    width: 11px
+    height: calc(100% + 2px)
+    top: -50%
+    border-left: 1px solid #c6c6c6
+    border-bottom: 1px solid #c6c6c6
+    transform: translate(0, -4px)
+    pointer-events: none
+  &::before
+    left: var(--line-left)
+  &::after
+    width: 0
+    left: 25px
+
+.row:last-child .depth:after
+  content: none
