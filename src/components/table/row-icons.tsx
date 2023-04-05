@@ -30,7 +30,10 @@ export const RowIcons: FC<IRowIconsProps> = ({ depth, isEdit, row }) => {
   }
 
   return (
-    <div className={styles.cell}>
+    <div className={`${styles.cell} ${depth !==0 ? styles.depth : ''}`}
+    //  @ts-ignore
+    style={{ "--line-left": `${5 + (20 * depth)}px` }}
+    >
       <div
         className={`${styles.icons} ${!isEdit ? styles.icons_hovered : ''}`}
         style={{ marginLeft: depth * 20 }}

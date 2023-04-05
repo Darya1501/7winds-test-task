@@ -50,7 +50,7 @@ export const TableRow: FC<ITableRowProps> = ({ row, index, depth }) => {
   }
 
   return (
-    <li>
+    <>
       <form className={styles.row} onSubmit={onSubmit}>
         <RowIcons depth={depth} isEdit={isEdit} row={row} />
 
@@ -96,16 +96,14 @@ export const TableRow: FC<ITableRowProps> = ({ row, index, depth }) => {
         <input type="submit" value="" hidden />
       </form>
 
-      <ul>
-        {('id' in row) && row.child.map((child) => 
-            <TableRow
-              key={isFilled(child) ? child.id : child.list_id}
-              row={child}
-              index={2}
-              depth={depth + 1}
-            />
-          )}
-      </ul>
-    </li>
+      {('id' in row) && row.child.map((child) => 
+        <TableRow
+          key={isFilled(child) ? child.id : child.list_id}
+          row={child}
+          index={2}
+          depth={depth + 1}
+        />
+      )}
+    </>
   )
 }
