@@ -3,17 +3,13 @@
   grid-template-columns: minmax(150px, max-content) 1fr repeat(4, 200px)
   border-bottom: 1px solid#414144
 
-.row
-  &:last-child
-    border-bottom: none
-
 .attribute
   padding: 0 0 12px 12px
   font-size: 14px
   color: #A1A1AA
+  min-width: 160px
 
 .cell
-  position: relative
   height: 60px
   padding: 0 12px
   display: flex
@@ -21,6 +17,7 @@
   font-size: 14px
   white-space: nowrap
   text-overflow: ellipsis
+  min-width: 160px
 
 .icons
   padding: 6px
@@ -31,10 +28,16 @@
     line-height: 1
     z-index: 1
 
+.secondIcon
+  display: none
+
 .icons_hovered
   cursor: pointer
+  z-index: 2
   &:hover
     background-color: #414144
+    .secondIcon
+      display: block
 
 .input
   padding: 10px
@@ -59,24 +62,26 @@ input[type='number']
 .plug_cell
   grid-column: span 3
 
+.group
+  position: relative
+
 .depth
   --line-left: 35px
-  position: relative
-  &::before, &::after
+  &::before
     content: ''
     position: absolute
-    width: 11px
-    height: calc(100% + 2px)
-    top: -50%
+    height: 100%
+    top: -30px
     border-left: 1px solid #c6c6c6
-    border-bottom: 1px solid #c6c6c6
-    transform: translate(0, -4px)
     pointer-events: none
+    z-index: 1
   &::before
     left: var(--line-left)
   &::after
-    width: 0
-    left: 25px
-
-.row:last-child .depth:after
-  content: none
+    content: ''
+    position: absolute
+    border-bottom: 1px solid #c6c6c6
+    top: 30px
+    width: 15px
+    left: var(--line-left)
+    z-index: 1

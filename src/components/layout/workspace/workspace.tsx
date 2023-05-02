@@ -1,7 +1,7 @@
 import React from 'react'
 import { Table } from '../../table/table'
 import { Tabs } from '../../tabs/tabs'
-
+import styles from './workspace.module.sass'
 
 export const Workspace = () => {
   const content = [
@@ -11,7 +11,7 @@ export const Workspace = () => {
     }
   ]
   return (
-    <div>
+    <div className={styles.content}>
       <Tabs body={content}  />
     </div>
   )

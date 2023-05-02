@@ -9,7 +9,7 @@ type TTableState = {
 const initialState: TTableState = {
   displayRows: [
     {
-      list_id: 1,
+      listId: 1,
       parentId: null,
 
       rowName: "",
@@ -38,7 +38,7 @@ const tableSlice = createSlice({
     updateExistingRows(state, action: PayloadAction<{ changed: RowData[], current: RowData }>) {
       function updateArray(array: Array<RowData | EmptyRow>) {
         return array.map((elem) => {
-          if ('list_id' in elem) return elem
+          if ('listId' in elem) return elem
           if (elem.id === action.payload.current.id) elem = { ...elem, ...action.payload.current }
           const changedObj = action.payload.changed.find((v) => v.id === (elem as RowData).id)
           if (changedObj) elem = { ...elem, ...changedObj }
@@ -50,11 +50,11 @@ const tableSlice = createSlice({
       state.displayRows = updateArray(state.displayRows)
     },
 
-    fillEmptyRow(state, action: PayloadAction<{ changed: RowData[], current: RowData, list_id: number }>) {
+    fillEmptyRow(state, action: PayloadAction<{ changed: RowData[], current: RowData, listId: number }>) {
       function updateArray(array: Array<RowData | EmptyRow>) {
         return array.map((elem) => {
-          if ('list_id' in elem) {
-            if (elem.list_id === action.payload.list_id) return { ...action.payload.current, child: [] }
+          if ('listId' in elem) {
+            if (elem.listId === action.payload.listId) return { ...action.payload.current, child: [] }
           } else {
             const changedObj = action.payload.changed.find((v) => v.id === (elem as RowData).id)
             if (changedObj) elem = { ...elem, ...changedObj }
@@ -67,7 +67,6 @@ const tableSlice = createSlice({
     },
 
     deleteExistingRow(state, action: PayloadAction<{ changed: RowData[], current: RowData }>) {
-      console.log('current: ', action.payload.current);
       function updateArray(array: Array<RowData | EmptyRow>) {
         return array.reduce((acc: Array<RowData | EmptyRow>, curr) => {
           if (isFilled(curr)) {
@@ -86,7 +85,7 @@ const tableSlice = createSlice({
 
     addEmptyRow(state, action: PayloadAction<{ parent: RowData }>) {
       const newRow: EmptyRow = {
-        list_id: Date.now(),
+        listId: Date.now(),
         parentId: action.payload.parent.id,
 
         rowName: '',

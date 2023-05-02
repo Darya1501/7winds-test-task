@@ -1,4 +1,4 @@
-import React, { FC, FormEvent, useState } from 'react'
+import React, { ChangeEvent, FC, useState } from 'react'
 import styles from './table.module.sass'
 
 interface ITableCellProps {
@@ -26,7 +26,7 @@ export const TableCell: FC<ITableCellProps> = ({ name, type = 'text', placeholde
             name={name}
             type={type}
             value={value}
-            onChange={(event: FormEvent<HTMLInputElement>) => setValue(event.currentTarget.value)}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => setValue(event.target.value)}
             min='0'
             placeholder={placeholder}
             disabled={!isEdit}

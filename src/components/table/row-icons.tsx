@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, {CSSProperties, FC} from "react";
 
 import iconCalculation from "../../images/icon-calculation.svg";
 import iconTrash from "../../images/icon-trash.svg";
@@ -8,15 +8,16 @@ import { useDispatch } from "../../hooks/store-hooks";
 import { addEmptyRow } from "../../store/slices/table";
 import { EmptyRow, isFilled, RowData } from "../../utils/types";
 import { deleteRow } from "../../store/queries/table";
+import clsx from "clsx";
 
 interface IRowIconsProps {
   depth: number,
   isEdit: boolean,
-  row: RowData | EmptyRow
+  row: RowData | EmptyRow;
+  index: number;
 }
 
-export const RowIcons: FC<IRowIconsProps> = ({ depth, isEdit, row }) => {
-  const [ isSecondIconsVisiable, setIsSecondIconsVisiable ] = useState(false);
+export const RowIcons: FC<IRowIconsProps> = ({ depth, isEdit, row, index }) => {
   const dispatch = useDispatch()
 
   const createRow = () => {
@@ -30,18 +31,16 @@ export const RowIcons: FC<IRowIconsProps> = ({ depth, isEdit, row }) => {
   }
 
   return (
-    <div className={`${styles.cell} ${depth !==0 ? styles.depth : ''}`}
-    //  @ts-ignore
-    style={{ "--line-left": `${5 + (20 * depth)}px` }}
+    <div
+      className={clsx(styles.cell, { [styles.depth]: depth !==0 })}
+      style={{ "--line-left": `${5 + (20 * depth)}px`, "--index": index } as CSSProperties }
     >
       <div
         className={`${styles.icons} ${!isEdit ? styles.icons_hovered : ''}`}
         style={{ marginLeft: depth * 20 }}
-        onMouseEnter={() => setIsSecondIconsVisiable(true)}
-        onMouseLeave={() => setIsSecondIconsVisiable(false)}
       >
         <img onClick={createRow} src={iconCalculation} alt='' />
-        { isSecondIconsVisiable && depth !== 0 && (!isEdit) && (<img onClick={deleteCurrentRow} src={iconTrash} alt='' />) }
+        { depth !== 0 && (!isEdit) && (<img onClick={deleteCurrentRow} className={styles.secondIcon} src={iconTrash} alt='' />) }
       </div>
     </div>
   )

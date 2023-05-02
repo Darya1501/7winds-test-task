@@ -1,4 +1,4 @@
-import React, { FC, FormEvent, useState } from 'react'
+import React, {CSSProperties, FC, FormEvent, useState} from 'react'
 
 import { useDispatch } from '../../hooks/store-hooks'
 import { createRow, updateRow } from '../../store/queries/table'
@@ -12,10 +12,11 @@ import styles from './table.module.sass'
 interface ITableRowProps {
   row: RowData | EmptyRow,
   index: number,
+  parentIndex: number,
   depth: number
 }
 
-export const TableRow: FC<ITableRowProps> = ({ row, index, depth }) => {
+export const TableRow: FC<ITableRowProps> = ({ row, index, parentIndex, depth }) => {
   const [ isEdit, setIsEdit ] = useState(!('id' in row))
   const dispatch = useDispatch()
 
@@ -41,7 +42,7 @@ export const TableRow: FC<ITableRowProps> = ({ row, index, depth }) => {
     }
 
     if (!isFilled(data)) {
-      dispatch(createRow(data, data.list_id))
+      dispatch(createRow(data, data.listId))
     } else {
       dispatch(updateRow(data))
     }
@@ -50,9 +51,9 @@ export const TableRow: FC<ITableRowProps> = ({ row, index, depth }) => {
   }
 
   return (
-    <>
-      <form className={styles.row} onSubmit={onSubmit}>
-        <RowIcons depth={depth} isEdit={isEdit} row={row} />
+    <div className={styles.group}>
+      <form className={styles.row} onSubmit={onSubmit} style={{'--depth': `depth-${depth}`} as CSSProperties}>
+        <RowIcons depth={depth} index={index - parentIndex} isEdit={isEdit} row={row} />
 
         <TableCell
           name='rowName'
@@ -96,14 +97,15 @@ export const TableRow: FC<ITableRowProps> = ({ row, index, depth }) => {
         <input type="submit" value="" hidden />
       </form>
 
-      {('id' in row) && row.child.map((child) => 
+      {('id' in row) && row.child.map((child, i) =>
         <TableRow
-          key={isFilled(child) ? child.id : child.list_id}
+          key={isFilled(child) ? child.id : child.listId}
           row={child}
-          index={2}
+          parentIndex={index}
+          index={i + index + 1}
           depth={depth + 1}
         />
       )}
-    </>
+    </div>
   )
 }

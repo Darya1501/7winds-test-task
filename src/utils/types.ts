@@ -23,7 +23,7 @@ export interface NewRowData extends RowBasic {
 }
 
 export interface EmptyRow extends NewRowData {
-  list_id: number
+  listId: number
 }
 
 export interface RowData extends RowBasic {

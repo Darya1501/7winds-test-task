@@ -11,9 +11,9 @@ export const Table = () => {
   return (
     <div className={styles.table}>
       <TableHeader />
-      <ul className={styles.ul}>
-        { displayRows.map((data, index) => <TableRow key={('id' in data) ? data.id : 123} row={data} index={index} depth={0} />) }
-      </ul>
+      <div className={styles.ul}>
+        { displayRows.map((data, index) => <TableRow key={('id' in data) ? data.id : data.listId} row={data} index={index} parentIndex={0} depth={0} />) }
+      </div>
     </div>
   )
 }
