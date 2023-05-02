@@ -16,7 +16,7 @@ export const Tabs: FC<ITabsProps> = ({ body }) => {
   };
 
   return (
-    <div>
+    <>
       <div className={styles.headers}>
         {
           body.map((item, index) => (
@@ -34,6 +34,6 @@ export const Tabs: FC<ITabsProps> = ({ body }) => {
       <div className={styles.content}>
         { body[active] && <div>{body[active].content}</div> }
       </div>
-    </div>
+    </>
   )
 }

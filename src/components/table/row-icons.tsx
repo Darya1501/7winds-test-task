@@ -17,7 +17,7 @@ interface IRowIconsProps {
 }
 
 export const RowIcons: FC<IRowIconsProps> = ({ parent, type, index, row }) => {
-  const [isSecondIconsVisiable, setIsSecondIconsVisiable] = useState(false);
+  const [isSecondIconsVisible, setIsSecondIconsVisible] = useState(false);
 
   const [leftLineLength, setLeftLineLength] = useState(0)
   const [leftLinePosition, setLeftLinePosition] = useState(0)
@@ -64,7 +64,7 @@ export const RowIcons: FC<IRowIconsProps> = ({ parent, type, index, row }) => {
   return (
     <div className={styles.cell}>
       <div
-        className={styles.horisontal_line}
+        className={styles.horizontal_line}
         style={{
           width: leftLineLength,
           left: leftLinePosition
@@ -76,21 +76,21 @@ export const RowIcons: FC<IRowIconsProps> = ({ parent, type, index, row }) => {
           `${type === 'row' ? styles.row_icon : parent ? styles.second_level_icon : ''} ` +
           `${!('list_id' in row) ? styles.icons_hovered : ''}`
         }
-        onMouseEnter={() => setIsSecondIconsVisiable(true && !('list_id' in row))}
-        onMouseLeave={() => setIsSecondIconsVisiable(false)}
+        onMouseEnter={() => setIsSecondIconsVisible(true && !('list_id' in row))}
+        onMouseLeave={() => setIsSecondIconsVisible(false)}
       >
         {type === "row" ? (
           <img onClick={() => createRow('row', row.parent)} src={iconCalculation} alt='' />
         ) : parent ? (
           <>
             <img onClick={() => createRow('level', row.parent)} src={iconSecondLevel} alt='' />
-            {isSecondIconsVisiable && ('id' in row) && (<img onClick={() => createRow('row', row.id)} src={iconCalculation} alt='' />)}
+            {isSecondIconsVisible && ('id' in row) && (<img onClick={() => createRow('row', row.id)} src={iconCalculation} alt='' />)}
           </>
         ) : (
           <>
             <img onClick={() => createRow('level', null)} src={iconFirstLevel} alt='' />
             {
-              isSecondIconsVisiable  && ('id' in row) &&
+              isSecondIconsVisible  && ('id' in row) &&
               (<>
                 <img onClick={() => createRow('level', row.id)} src={iconSecondLevel} alt='' />
                 <img onClick={() => createRow('row', row.id)} src={iconCalculation} alt='' />
